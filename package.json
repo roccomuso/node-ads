@@ -1,0 +1,26 @@
+{
+  "name": "node-ads",
+  "version": "1.0.0",
+  "description": "NodeJS Twincat ADS protocol implementation",
+  "main": "index.js",
+  "keywords": [
+    "twincat",
+    "plc",
+    "ads",
+    "beckhoff",
+    "protocol"
+  ],
+  "author": "roccomuso",
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/roccomuso/node-ads"
+  },
+  "dependencies": {
+    "safe-buffer": "^5.1.1"
+  }
+}
