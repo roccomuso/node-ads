@@ -10,7 +10,10 @@
     "beckhoff",
     "protocol"
   ],
-  "author": "roccomuso",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "author": "Rocco Musolino (@roccomuso)",
   "licenses": [
     {
       "type": "MIT"
