@@ -21,6 +21,7 @@
     "url": "https://github.com/roccomuso/node-ads"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
     "safe-buffer": "^5.1.1"
   }
 }
