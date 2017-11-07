@@ -21,7 +21,7 @@ Examples
 
 
 ```javascript
-var ads = require('ads');
+var ads = require('ads')
 
 var options = {
     //The IP or hostname of the target machine
@@ -40,18 +40,18 @@ var options = {
     //amsPortSource: 32905
     //The ams target port
     //amsPortTarget: 801
-};
+}
 
 client = ads.connect(options, function() {
     this.readDeviceInfo(function(err, result) {
-        console.log(result);
-        this.end();
-    });
-});
+        console.log(result)
+        this.end()
+    })
+})
 
 client.on('error', function(error) {
-    console.log(error);
-});
+    console.log(error)
+})
 ```
 
 ### Read something
@@ -69,30 +69,30 @@ var myHandle = {
     //This can be an array with the same length as the array length of byteLength.
     //If not defined, the default will be 'value'.     
     propname: 'value'      
-};
+}
 
 client = ads.connect(options, function() {
     this.read(myHandle, function(err, handle) {
         //result is the myHandle object with the new properties filled in
-        console.log(handle.value);
+        console.log(handle.value)
         //All handles will be released automaticly here
-        this.end();
-    });
-});
+        this.end()
+    })
+})
 ```
 
 ### Write something
 
 ```javascript
 client = ads.connect(options, function() {
-    myHandle.value = 5;
+    myHandle.value = 5
     this.write(myHandle, function(err) {
         this.read(myHandle, function(err, handle) {
-            console.log(handle.value);
-            this.end();
-        });
-    });
-});
+            console.log(handle.value)
+            this.end()
+        })
+    })
+})
 ```
 
 ### Get notifications
@@ -106,25 +106,25 @@ var myHandle = {
     //transmissionMode: ads.NOTIFY.ONCHANGE, (other option is ads.NOTIFY.CYLCIC)
     //maxDelay: 0,  -> Latest time (in ms) after which the event has finished
     //cycleTime: 10 -> Time (in ms) after which the PLC server checks whether the variable has changed
-};
+}
 
 client = ads.connect(options, function() {
-    this.notify(myHandle);
-});
+    this.notify(myHandle)
+})
 
 client.on('notification', function(handle){
-    console.log(handle.value);
-});
+    console.log(handle.value)
+})
 
 process.on('exit', function () {
-    console.log("exit");
-});
+    console.log("exit")
+})
 
 process.on('SIGINT', function() {
     client.end(function() {
-        process.exit();
-    });
-});
+        process.exit()
+    })
+})
 ```
 
 ### Get symbol list
@@ -132,10 +132,10 @@ process.on('SIGINT', function() {
 ```javascript
 client = ads.connect(options, function() {
     this.getSymbols(function(err, symbols) {
-        console.log(symbols);
-        this.end();
-    });
-});
+        console.log(symbols)
+        this.end()
+    })
+})
 ```
 
 License (MIT)
