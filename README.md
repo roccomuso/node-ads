@@ -2,11 +2,16 @@ node-ads [![NPM Version](https://img.shields.io/npm/v/node-ads.svg)](https://www
 ======
 
 
-**When we use notification, the notification will blocked to fire if too many notifications are defined  **
-**I Added readmulti to this packet,so that we can read multi **
+> A NodeJS implementation for the Twincat ADS protocol.
+> (Twincat and ADS is from Beckhoff &copy;. I'm not affiliated.)
 
-A NodeJS implementation for the Twincat ADS protocol.  
-(Twincat and ADS is from Beckhoff &copy;. I'm not affiliated.)
+### Changelog
+
+- Added aliases: `TOD -> TIME_OF_DAY` and `DT -> DATE_AND_TIME`.
+- Code standardized.
+- Using `safe-buffer`.
+- When we use notification, the notification will blocked to fire if too many notifications are defined
+- `multiRead` method.
 
 
 Examples
@@ -20,7 +25,7 @@ var ads = require('ads');
 
 var options = {
     //The IP or hostname of the target machine
-    host: "10.0.0.2", 
+    host: "10.0.0.2",
     //The NetId of the target machine
     amsNetIdTarget: "5.1.204.160.1.1",
     //The NetId of the source machine.
@@ -28,7 +33,7 @@ var options = {
     //but on the target machine this must be added as a route.
     amsNetIdSource: "192.168.137.50.1.1",
 
-    //OPTIONAL: (These are set by default) 
+    //OPTIONAL: (These are set by default)
     //The tcp destination port
     //port: 48898
     //The ams source port
@@ -61,7 +66,7 @@ var myHandle = {
     //If not defined, the default will be BOOL.
     bytelength: ads.INT,  
     //The propery name where the value should be written.
-    //This can be an array with the same length as the array length of byteLength. 
+    //This can be an array with the same length as the array length of byteLength.
     //If not defined, the default will be 'value'.     
     propname: 'value'      
 };
