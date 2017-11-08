@@ -7,11 +7,12 @@ node-ads [![NPM Version](https://img.shields.io/npm/v/node-ads.svg)](https://www
 
 ### Changelog
 
+- `debug` module.
 - Added aliases: `TOD -> TIME_OF_DAY` and `DT -> DATE_AND_TIME`.
 - Code standardized.
 - Using `safe-buffer`.
 - When we use notification, the notification will blocked to fire if too many notifications are defined
-- `multiRead` method.
+- `multiRead` method and read bug fix (timeout).
 
 
 Examples
