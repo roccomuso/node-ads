@@ -22,7 +22,7 @@ Examples
 
 
 ```javascript
-var ads = require('ads')
+var ads = require('node-ads')
 
 var options = {
     //The IP or hostname of the target machine
@@ -43,7 +43,7 @@ var options = {
     //amsPortTarget: 801
 }
 
-client = ads.connect(options, function() {
+var client = ads.connect(options, function() {
     this.readDeviceInfo(function(err, result) {
         console.log(result)
         this.end()
@@ -72,7 +72,7 @@ var myHandle = {
     propname: 'value'      
 }
 
-client = ads.connect(options, function() {
+var client = ads.connect(options, function() {
     this.read(myHandle, function(err, handle) {
         //result is the myHandle object with the new properties filled in
         console.log(handle.value)
@@ -85,7 +85,7 @@ client = ads.connect(options, function() {
 ### Write something
 
 ```javascript
-client = ads.connect(options, function() {
+var client = ads.connect(options, function() {
     myHandle.value = 5
     this.write(myHandle, function(err) {
         this.read(myHandle, function(err, handle) {
@@ -109,7 +109,7 @@ var myHandle = {
     //cycleTime: 10 -> Time (in ms) after which the PLC server checks whether the variable has changed
 }
 
-client = ads.connect(options, function() {
+var client = ads.connect(options, function() {
     this.notify(myHandle)
 })
 
