@@ -45,6 +45,7 @@ var options = {
 
 var client = ads.connect(options, function() {
     this.readDeviceInfo(function(err, result) {
+        if (err) console.log(err)
         console.log(result)
         this.end()
     })
@@ -74,6 +75,7 @@ var myHandle = {
 
 var client = ads.connect(options, function() {
     this.read(myHandle, function(err, handle) {
+        if (err) console.log(err)
         //result is the myHandle object with the new properties filled in
         console.log(handle.value)
         //All handles will be released automaticly here
@@ -88,7 +90,9 @@ var client = ads.connect(options, function() {
 var client = ads.connect(options, function() {
     myHandle.value = 5
     this.write(myHandle, function(err) {
+        if (err) console.log(err)
         this.read(myHandle, function(err, handle) {
+            if (err) console.log(err)
             console.log(handle.value)
             this.end()
         })
@@ -133,6 +137,7 @@ process.on('SIGINT', function() {
 ```javascript
 client = ads.connect(options, function() {
     this.getSymbols(function(err, symbols) {
+        if (err) console.log(err)
         console.log(symbols)
         this.end()
     })
