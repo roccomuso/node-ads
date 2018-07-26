@@ -144,6 +144,46 @@ client = ads.connect(options, function() {
 })
 ```
 
+### Event-Driven Detection of Changes to the Symbol Table
+
+If the symbol table changes because, for instance, a new PLC program is written into the controller, the handles must be ascertained once again. The example below illustrates how changes to the symbol table can be detected.
+
+```javascript
+
+var start = true;
+
+var myHandle = {
+    indexGroup: ads.ADSIGRP.SYM_VERSION,
+    indexOffset: 0,
+    bytelength: ads.BYTE,  
+}
+
+var client = ads.connect(options, function() {
+    start = true;
+    this.notify(myHandle);
+})
+
+client.on('notification', function(handle){
+    if (start) {
+      console.log('symbol table version '+handle.value)
+    } else {
+      console.log('symbol table changed '+handle.value)
+    }
+    
+    start = false;
+})
+
+process.on('SIGINT', function() {
+    client.end(function() {
+        process.exit()
+    })
+})
+
+client.on('error', function(error) {
+    console.log(error)
+})
+```
+
 License (MIT)
 -------------
 Copyright (c) 2012 Inando
