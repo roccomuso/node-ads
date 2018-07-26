@@ -144,6 +144,74 @@ client = ads.connect(options, function() {
 })
 ```
 
+### Read device state
+
+```javascript
+var client = ads.connect(options, function() {
+    this.readState(function(err,rs) {
+      var text = '?';
+      switch (rs.adsState) {
+        case ads.ADSSTATE.INVALID:
+              text = 'INVALID';
+              break;
+        case ads.ADSSTATE.IDLE:
+              text = 'IDLE';
+              break;
+        case ads.ADSSTATE.RESET:
+              text = 'RESET';
+              break;
+        case ads.ADSSTATE.INIT:
+              text = 'INIT';
+              break;
+        case ads.ADSSTATE.START:
+              text = 'START';
+              break;
+        case ads.ADSSTATE.RUN:
+              text = 'RUN';
+              break;
+        case ads.ADSSTATE.STOP:
+              text = 'STOP';
+              break;
+        case ads.ADSSTATE.SAVECFG:
+              text = 'SAVECFG';
+              break;
+        case ads.ADSSTATE.LOADCFG:
+              text = 'LOADCFG';
+              break;
+        case ads.ADSSTATE.POWERFAILURE:
+              text = 'POWERFAILURE';
+              break;
+        case ads.ADSSTATE.POWERGOOD:
+              text = 'POWERGOOD';
+              break;
+        case ads.ADSSTATE.ERROR:
+              text = 'ERROR';
+              break;
+        case ads.ADSSTATE.SHUTDOWN:
+              text = 'SHUTDOWN';
+              break;
+        case ads.ADSSTATE.SUSPEND:
+              text = 'SUSPEND';
+              break;
+        case ads.ADSSTATE.RESUME:
+              text = 'RESUME';
+              break;
+        case ads.ADSSTATE.CONFIG:
+              text = 'CONFIG';
+              break;
+        case ads.ADSSTATE.RECONFIG:
+              text = 'RECONFIG';
+              break;
+        case ads.ADSSTATE.STOPPING:
+              text = 'STOPPING';
+              break;
+      }
+      console.log('The state is '+text);
+      this.end();
+    });
+})
+```
+
 License (MIT)
 -------------
 Copyright (c) 2012 Inando
