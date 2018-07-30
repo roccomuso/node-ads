@@ -1,6 +1,6 @@
 {
   "name": "node-ads",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "NodeJS Twincat ADS protocol implementation",
   "main": "index.js",
   "keywords": [
