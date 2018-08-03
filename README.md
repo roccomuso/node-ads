@@ -100,6 +100,47 @@ var client = ads.connect(options, function() {
 })
 ```
 
+
+### MultiRead something
+
+```javascript
+        this.client.multiRead(
+            [{
+                symname: '.TESTBOOL',
+                indexGroup: 16448,
+                indexOffset: 10438,
+                bytelength: ads.BOOL,
+            }, {
+                symname: '.TESTINT',
+                indexGroup: 16448,
+                indexOffset: 26938,
+                bytelength: ads.UINT,
+            }],
+            function (err, result) {
+                if (err) {
+                    console.error(err)
+                }
+                console.log(result)
+            });
+```
+
+### Get handles
+
+```javascript
+        this.client.getHandles(
+            [{
+                symname: 'MAIN.LAMPE',
+            }, {
+                symname: '.DIMMER',
+            }],
+            function (err, handles) {
+                if (err) {
+                    console.error(err)
+                }
+                console.log(handles)
+            });
+```
+
 ### Get notifications
 
 ```javascript
@@ -137,8 +178,11 @@ process.on('SIGINT', function() {
 ```javascript
 client = ads.connect(options, function() {
     this.getSymbols(function(err, symbols) {
-        if (err) console.log(err)
+        if (err) {
+            console.error(err)
+        }
         console.log(symbols)
+
         this.end()
     })
 })
@@ -233,9 +277,9 @@ var client = ads.connect(options, function() {
 
 client.on('notification', function(handle){
     if (start) {
-      console.log('symbol table version '+handle.value)
+      console.log('symbol table version ' + handle.value)
     } else {
-      console.log('symbol table changed '+handle.value)
+      console.log('symbol table changed ' + handle.value)
     }
     
     start = false;
