@@ -158,6 +158,28 @@ var client = ads.connect(options, function() {
 })
 ```
 
+the following states are possible:
+```javascript
+  ads.ADSSTATE.INVALID
+  ads.ADSSTATE.IDLE
+  ads.ADSSTATE.RESET
+  ads.ADSSTATE.INIT
+  ads.ADSSTATE.START
+  ads.ADSSTATE.RUN
+  ads.ADSSTATE.STOP
+  ads.ADSSTATE.SAVECFG
+  ads.ADSSTATE.LOADCFG
+  ads.ADSSTATE.POWERFAILURE
+  ads.ADSSTATE.POWERGOOD
+  ads.ADSSTATE.ERROR
+  ads.ADSSTATE.SHUTDOWN
+  ads.ADSSTATE.SUSPEND
+  ads.ADSSTATE.RESUME
+  ads.ADSSTATE.CONFIG
+  ads.ADSSTATE.RECONFIG
+  ads.ADSSTATE.STOPPING
+```
+
 ### Event-Driven Detection of Changes to the Symbol Table
 
 If the symbol table changes because, for instance, a new PLC program is written into the controller, the handles must be ascertained once again. The example below illustrates how changes to the symbol table can be detected.
