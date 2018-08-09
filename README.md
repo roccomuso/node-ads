@@ -149,6 +149,9 @@ client = ads.connect(options, function() {
 ```javascript
 var client = ads.connect(options, function() {
     this.readState(function(err,rs) {
+      if (rs.adsState == ads.ADSSTATE.RUN) {
+        console.log('the PLC is lucky!')
+      }
       console.log('The state is '+ads.ADSSTATETXT[rs.adsState])
       this.end()
     });
