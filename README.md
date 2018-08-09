@@ -14,6 +14,8 @@ node-ads [![NPM Version](https://img.shields.io/npm/v/node-ads.svg)](https://www
 - When we use notification, the notification will blocked to fire if too many notifications are defined
 - `multiRead` method and read bug fix (timeout).
 
+- improve `multiRead` to use SymbolNames
+- add `getHandles`
 
 Examples
 --------
