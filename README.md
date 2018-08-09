@@ -158,7 +158,7 @@ var client = ads.connect(options, function() {
 })
 ```
 
-the following states are possible:
+The following states are possible:
 ```javascript
   ads.ADSSTATE.INVALID
   ads.ADSSTATE.IDLE
