@@ -149,7 +149,7 @@ client = ads.connect(options, function() {
 ```javascript
 var client = ads.connect(options, function() {
     this.readState(function(err,rs) {
-      console.log('The state is '+ads.ADSSTATES[rs.adsState]);
+      console.log('The state is '+ads.ADSSTATETXT[rs.adsState]);
       this.end();
     });
 })
