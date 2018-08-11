@@ -108,7 +108,7 @@ var myHandle = {
     bytelength: ads.WORD,  
 
     //OPTIONAL: (These are set by default)       
-    //transmissionMode: ads.NOTIFY.ONCHANGE, (other option is ads.NOTIFY.CYLCIC)
+    //transmissionMode: ads.NOTIFY.ONCHANGE, (other option is ads.NOTIFY.CYCLIC)
     //maxDelay: 0,  -> Latest time (in ms) after which the event has finished
     //cycleTime: 10 -> Time (in ms) after which the PLC server checks whether the variable has changed
 }
@@ -148,11 +148,15 @@ client = ads.connect(options, function() {
 
 ```javascript
 var client = ads.connect(options, function() {
-    this.readState(function(err,rs) {
-      if (rs.adsState == ads.ADSSTATE.RUN) {
-        console.log('The PLC is lucky!')
+    this.readState(function(error,result) {
+      if (error) {
+        consiole.log(error)
+      } else {
+        if (result.adsState == ads.ADSSTATE.RUN) {
+          console.log('The PLC is lucky!')
+        }
+        console.log('The state is '+ads.ADSSTATE.fromId(result.adsState))
       }
-      console.log('The state is '+ads.ADSSTATETXT[rs.adsState])
       this.end()
     });
 })
