@@ -14,12 +14,13 @@ node-ads [![NPM Version](https://img.shields.io/npm/v/node-ads.svg)](https://www
 - When we use notification, the notification will blocked to fire if too many notifications are defined
 - `multiRead` method and read bug fix (timeout).
 
+- improve `multiRead` to use SymbolNames
+- add `getHandles`
 
 Examples
 --------
 
 ### Hello machine
-
 
 ```javascript
 var ads = require('node-ads')
@@ -44,8 +45,8 @@ var options = {
 }
 
 var client = ads.connect(options, function() {
-    this.readDeviceInfo(function(err, result) {
-        if (err) console.log(err)
+    this.readDeviceInfo(function(error, result) {
+        if (error) console.log(error)
         console.log(result)
         this.end()
     })
@@ -92,11 +93,60 @@ var client = ads.connect(options, function() {
     this.write(myHandle, function(err) {
         if (err) console.log(err)
         this.read(myHandle, function(err, handle) {
-            if (err) console.log(err)
+            if (err) {
+                 console.error(err)
+            }
             console.log(handle.value)
             this.end()
         })
     })
+})
+```
+
+
+### MultiRead something
+
+```javascript
+var client = ads.connect(options, function() {
+    this.multiRead(
+        [{
+            symname: '.TESTBOOL',
+            bytelength: ads.BOOL,
+        }, {
+            symname: '.TESTINT',
+            bytelength: ads.UINT,
+        }],
+        function (handles) {
+            if (handles.err) {
+                console.error(handles.err)
+            }
+            console.log(handles)
+
+            this.end()
+        }
+    )
+})
+```
+
+### Get handles
+
+```javascript
+var client = ads.connect(options, function() {
+    this.getHandles(
+        [{
+            symname: '.TESTBOOL',
+        }, {
+            symname: '.TESTINT',
+        }],
+        function (error, handles) {
+            if (error) {
+                console.error(error)
+            }
+            console.log(handles)
+
+            this.end()
+        }
+    )
 })
 ```
 
@@ -136,9 +186,12 @@ process.on('SIGINT', function() {
 
 ```javascript
 client = ads.connect(options, function() {
-    this.getSymbols(function(err, symbols) {
-        if (err) console.log(err)
+    this.getSymbols(function(error, symbols) {
+        if (error) {
+            console.error(error)
+        }
         console.log(symbols)
+
         this.end()
     })
 })
@@ -148,66 +201,72 @@ client = ads.connect(options, function() {
 
 ```javascript
 var client = ads.connect(options, function() {
-    this.readState(function(err,rs) {
-      var text = '?';
-      switch (rs.adsState) {
-        case ads.ADSSTATE.INVALID:
-              text = 'INVALID';
-              break;
-        case ads.ADSSTATE.IDLE:
-              text = 'IDLE';
-              break;
-        case ads.ADSSTATE.RESET:
-              text = 'RESET';
-              break;
-        case ads.ADSSTATE.INIT:
-              text = 'INIT';
-              break;
-        case ads.ADSSTATE.START:
-              text = 'START';
-              break;
-        case ads.ADSSTATE.RUN:
-              text = 'RUN';
-              break;
-        case ads.ADSSTATE.STOP:
-              text = 'STOP';
-              break;
-        case ads.ADSSTATE.SAVECFG:
-              text = 'SAVECFG';
-              break;
-        case ads.ADSSTATE.LOADCFG:
-              text = 'LOADCFG';
-              break;
-        case ads.ADSSTATE.POWERFAILURE:
-              text = 'POWERFAILURE';
-              break;
-        case ads.ADSSTATE.POWERGOOD:
-              text = 'POWERGOOD';
-              break;
-        case ads.ADSSTATE.ERROR:
-              text = 'ERROR';
-              break;
-        case ads.ADSSTATE.SHUTDOWN:
-              text = 'SHUTDOWN';
-              break;
-        case ads.ADSSTATE.SUSPEND:
-              text = 'SUSPEND';
-              break;
-        case ads.ADSSTATE.RESUME:
-              text = 'RESUME';
-              break;
-        case ads.ADSSTATE.CONFIG:
-              text = 'CONFIG';
-              break;
-        case ads.ADSSTATE.RECONFIG:
-              text = 'RECONFIG';
-              break;
-        case ads.ADSSTATE.STOPPING:
-              text = 'STOPPING';
-              break;
-      }
-      console.log('The state is '+text);
-      this.end();
+    this.readState(function(error, result) {
+        if (error) {
+            console.error(error)
+        }
+
+        var text = '?';
+
+        switch (result.adsState) {
+            case ads.ADSSTATE.INVALID:
+                text = 'INVALID';
+                break;
+            case ads.ADSSTATE.IDLE:
+                text = 'IDLE';
+                break;
+            case ads.ADSSTATE.RESET:
+                text = 'RESET';
+                break;
+            case ads.ADSSTATE.INIT:
+                text = 'INIT';
+                break;
+            case ads.ADSSTATE.START:
+                text = 'START';
+                break;
+            case ads.ADSSTATE.RUN:
+                text = 'RUN';
+                break;
+            case ads.ADSSTATE.STOP:
+                text = 'STOP';
+                break;
+            case ads.ADSSTATE.SAVECFG:
+                text = 'SAVECFG';
+                break;
+            case ads.ADSSTATE.LOADCFG:
+                text = 'LOADCFG';
+                break;
+            case ads.ADSSTATE.POWERFAILURE:
+                text = 'POWERFAILURE';
+                break;
+            case ads.ADSSTATE.POWERGOOD:
+                text = 'POWERGOOD';
+                break;
+            case ads.ADSSTATE.ERROR:
+                text = 'ERROR';
+                break;
+            case ads.ADSSTATE.SHUTDOWN:
+                text = 'SHUTDOWN';
+                break;
+            case ads.ADSSTATE.SUSPEND:
+                text = 'SUSPEND';
+                break;
+            case ads.ADSSTATE.RESUME:
+                text = 'RESUME';
+                break;
+            case ads.ADSSTATE.CONFIG:
+                text = 'CONFIG';
+                break;
+            case ads.ADSSTATE.RECONFIG:
+                text = 'RECONFIG';
+                break;
+            case ads.ADSSTATE.STOPPING:
+                text = 'STOPPING';
+                break;
+        }
+        console.log('The state is ' + text);
+
+        this.end();
     });
 })
 ```
@@ -233,9 +292,9 @@ var client = ads.connect(options, function() {
 
 client.on('notification', function(handle){
     if (start) {
-      console.log('symbol table version '+handle.value)
+      console.log('symbol table version ' + handle.value)
     } else {
-      console.log('symbol table changed '+handle.value)
+      console.log('symbol table changed ' + handle.value)
     }
     
     start = false;
