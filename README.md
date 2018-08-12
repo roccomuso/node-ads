@@ -108,7 +108,7 @@ var myHandle = {
     bytelength: ads.WORD,  
 
     //OPTIONAL: (These are set by default)       
-    //transmissionMode: ads.NOTIFY.ONCHANGE, (other option is ads.NOTIFY.CYLCIC)
+    //transmissionMode: ads.NOTIFY.ONCHANGE, (other option is ads.NOTIFY.CYCLIC)
     //maxDelay: 0,  -> Latest time (in ms) after which the event has finished
     //cycleTime: 10 -> Time (in ms) after which the PLC server checks whether the variable has changed
 }
@@ -148,68 +148,40 @@ client = ads.connect(options, function() {
 
 ```javascript
 var client = ads.connect(options, function() {
-    this.readState(function(err,rs) {
-      var text = '?';
-      switch (rs.adsState) {
-        case ads.ADSSTATE.INVALID:
-              text = 'INVALID';
-              break;
-        case ads.ADSSTATE.IDLE:
-              text = 'IDLE';
-              break;
-        case ads.ADSSTATE.RESET:
-              text = 'RESET';
-              break;
-        case ads.ADSSTATE.INIT:
-              text = 'INIT';
-              break;
-        case ads.ADSSTATE.START:
-              text = 'START';
-              break;
-        case ads.ADSSTATE.RUN:
-              text = 'RUN';
-              break;
-        case ads.ADSSTATE.STOP:
-              text = 'STOP';
-              break;
-        case ads.ADSSTATE.SAVECFG:
-              text = 'SAVECFG';
-              break;
-        case ads.ADSSTATE.LOADCFG:
-              text = 'LOADCFG';
-              break;
-        case ads.ADSSTATE.POWERFAILURE:
-              text = 'POWERFAILURE';
-              break;
-        case ads.ADSSTATE.POWERGOOD:
-              text = 'POWERGOOD';
-              break;
-        case ads.ADSSTATE.ERROR:
-              text = 'ERROR';
-              break;
-        case ads.ADSSTATE.SHUTDOWN:
-              text = 'SHUTDOWN';
-              break;
-        case ads.ADSSTATE.SUSPEND:
-              text = 'SUSPEND';
-              break;
-        case ads.ADSSTATE.RESUME:
-              text = 'RESUME';
-              break;
-        case ads.ADSSTATE.CONFIG:
-              text = 'CONFIG';
-              break;
-        case ads.ADSSTATE.RECONFIG:
-              text = 'RECONFIG';
-              break;
-        case ads.ADSSTATE.STOPPING:
-              text = 'STOPPING';
-              break;
+    this.readState(function(error,result) {
+      if (error) {
+        consiole.log(error)
+      } else {
+        if (result.adsState == ads.ADSSTATE.RUN) {
+          console.log('The PLC is lucky!')
+        }
+        console.log('The state is '+ads.ADSSTATE.fromId(result.adsState))
       }
-      console.log('The state is '+text);
-      this.end();
+      this.end()
     });
 })
+```
+
+The following states are possible:
+```javascript
+  ads.ADSSTATE.INVALID
+  ads.ADSSTATE.IDLE
+  ads.ADSSTATE.RESET
+  ads.ADSSTATE.INIT
+  ads.ADSSTATE.START
+  ads.ADSSTATE.RUN
+  ads.ADSSTATE.STOP
+  ads.ADSSTATE.SAVECFG
+  ads.ADSSTATE.LOADCFG
+  ads.ADSSTATE.POWERFAILURE
+  ads.ADSSTATE.POWERGOOD
+  ads.ADSSTATE.ERROR
+  ads.ADSSTATE.SHUTDOWN
+  ads.ADSSTATE.SUSPEND
+  ads.ADSSTATE.RESUME
+  ads.ADSSTATE.CONFIG
+  ads.ADSSTATE.RECONFIG
+  ads.ADSSTATE.STOPPING
 ```
 
 ### Event-Driven Detection of Changes to the Symbol Table
