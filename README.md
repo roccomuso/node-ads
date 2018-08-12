@@ -13,6 +13,7 @@ node-ads [![NPM Version](https://img.shields.io/npm/v/node-ads.svg)](https://www
 - Using `safe-buffer`.
 - When we use notification, the notification will blocked to fire if too many notifications are defined
 - `multiRead` method and read bug fix (timeout).
+- `multiRead` and `getHandels` method improved, `multiWrite` added.
 
 
 Examples
@@ -129,6 +130,91 @@ process.on('SIGINT', function() {
     client.end(function() {
         process.exit()
     })
+})
+```
+
+### MultiRead something
+
+```javascript
+var client = ads.connect(options, function() {
+    this.multiRead(
+        [{
+            symname: '.TESTBOOL',
+            bytelength: ads.BOOL,
+        }, {
+            symname: '.TESTINT',
+            bytelength: ads.UINT,
+        }],
+        function (error, handles) {
+            if (error) {
+                console.log(error)
+            } else {
+                handles.forEach(function(handle){
+                    if (handle.err) {
+                        console.error(handle.err)
+                    } else {
+                        console.log(handle.value)
+                    }
+                }
+            }
+            this.end()
+        })
+    )
+})
+```
+
+### MultiWrite something
+
+```javascript
+var client = ads.connect(options, function() {
+    this.multiRead(
+        [{
+            symname: '.TESTBOOL',
+            bytelength: ads.BOOL,
+            value: false
+       }, {
+            symname: '.TESTINT',
+            bytelength: ads.UINT,
+            value: 5
+        }],
+        function (error, handles) {
+            if (error) {
+                console.log(error)
+            } else {
+                handles.forEach(function(handle){
+                    if (handle.err) {
+                        console.error(handle.err)
+                    } else {
+                        console.log(handle.value)
+                    }
+                }
+            }
+            this.end()
+        })
+    )
+})
+```
+
+### Get handles
+
+```javascript
+var client = ads.connect(options, function() {
+    this.getHandles(
+        [{
+            symname: '.TESTBOOL',
+        }, {
+            symname: '.TESTINT',
+        }],
+        function (error, handles) {
+            if (error) {
+                console.log(error)
+            } else if (handles.err) {
+                console.error(handles.err)
+            } else {
+                console.log(handles)
+            }
+            this.end()
+        })
 })
 ```
 
