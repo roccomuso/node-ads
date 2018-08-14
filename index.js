@@ -1,1 +1,1 @@
-module.exports = require('./lib/ads')
+module.exports = require('./lib/ads');

@@ -1,6 +1,6 @@
 {
   "name": "node-ads",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "NodeJS Twincat ADS protocol implementation",
   "main": "index.js",
   "keywords": [
@@ -13,19 +13,16 @@
   "engines": {
     "node": ">=0.10"
   },
-  "author": "Rocco Musolino (@roccomuso)",
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ],
+  "author": "Florian Kapust (@oVi1337)",
+  "licenses": [{
+    "type": "MIT"
+  }],
   "repository": {
     "type": "git",
-    "url": "https://github.com/roccomuso/node-ads"
+    "url": "https://github.com/src-one/node-ads"
   },
   "dependencies": {
     "debug": "^3.1.0",
-    "lodash": "^4.17.4",
     "safe-buffer": "^5.1.1"
   }
 }
