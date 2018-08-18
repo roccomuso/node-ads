@@ -425,10 +425,10 @@ var myHandle = {
                   ads.array(ads.string(10),0,9),
                   ads.array(ads.useLocalTimezone(ads.TIME,false),0,9)
                  ],  
-    propname: ['value.abool',
-               'value.aarrayofint',
-               'value.aarrayofstring',
-               'value.aarrayoftime']
+    propname: ['value_abool',
+               'value_aarrayofint',
+               'value_aarrayofstring',
+               'value_aarrayoftime']
 }
 ```
 
