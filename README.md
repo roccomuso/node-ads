@@ -14,7 +14,8 @@ node-ads [![NPM Version](https://img.shields.io/npm/v/node-ads.svg)](https://www
 - When we use notification, the notification will blocked to fire if too many notifications are defined
 - `multiRead` method and read bug fix (timeout).
 - `multiRead` and `getHandels` method improved, `multiWrite` added.
-
+- working string length
+- array added
 
 Examples
 --------
@@ -308,6 +309,127 @@ process.on('SIGINT', function() {
 client.on('error', function(error) {
     console.log(error)
 })
+```
+
+### Something about the bytelength
+All possibilities of bytelength described here work with read, write, notificaton, multiread and multiwrite.
+
+
+If you simply enter a number, reading a value returns a buffer object of length or expecting to write. This can be further processed with the standard functions of buffer.
+
+This mehtode is called RAW read and write.
+```javascript
+var myHandle = {
+    symname: '.TestDoubleIntStruct',  
+    bytelength: 2,  
+    propname: 'value'      
+}
+var client = ads.connect(options, function() {
+    myHandle.value = new Buffer(4)
+    myHandle.value.writeInt16LE(5, 0)
+    myHandle.value.writeInt16LE(5, 2)
+    this.write(myHandle, function(err) {
+        if (err) console.log(err)
+        this.read(myHandle, function(err, handle) {
+            if (err) console.log(err)
+            console.log(handle.value)
+            this.end()
+        })
+    })
+})
+```
+
+There are also ready-made objects for reading and writing numeric variables:
+```javascript
+  ads.BOOL
+  ads.BYTE
+  ads.WORD
+  ads.DWORD
+  ads.SINT
+  ads.USINT
+  ads.INT
+  ads.UINT
+  ads.DINT
+  ads.UDINT
+  ads.LINT
+  ads.ULINT
+  ads.REAL
+  ads.LREAL
+```
+
+There are also ready-made objects for reading and writing date and time variables:
+
+With this type it is possible to convert the time zone. There are two ways to control this feature. You can add the variable useLocalTimezone to the handle. This is true for defauld. Or you use the function ads.useLocalTimezone().
+```javascript
+  ads.TIME
+  ads.TIME_OF_DAY
+  ads.TOD // TIME_OF_DAY alias
+  ads.DATE
+  ads.DATE_AND_TIME
+  ads.DT // DATE_AND_TIME alias
+```
+
+```javascript
+var myHandle = {
+    symname: '.TESTTIME',  
+    bytelength: ads.useLocalTimezone(ads.TIME,false),  
+    propname: 'value'      
+}
+```
+
+```javascript
+var myHandle = {
+    symname: '.TESTTIME',
+    useLocalTimezone: false,
+    bytelength: ads.TIME,  
+    propname: 'value'      
+}
+```
+
+The type ads.STRING is fix for 80 characters. Therefore you can use the ads.string(length) function.
+```javascript
+var myHandle = {
+    symname: '.SOMETEXT80',  
+    bytelength: ads.STRING,  
+    propname: 'value'      
+}
+```
+
+```javascript
+var myHandle = {
+    symname: '.SOMETEXT10',  
+    bytelength: ads.string(10),  
+    propname: 'value'      
+}
+```
+
+There is also a possibility to read and write arrays.
+This is done via the function ads.array(type, lowIndex, hiIndex). The low index and the hi index must be the same as in the twincat definition
+On reading the Value is an array, on writing the Value must be an array.
+The array under node always starts with 0, independently as loIndex and hiIndex are given.
+```javascript
+var myHandle = {
+    symname: '.SOMEINTARREY',  
+    bytelength: ads.array(ads.INT,0,9),  
+    propname: 'value'      
+}
+```
+
+You can also read and write structures. An array is passed for bytelength. Then an array with the same number of parameters is expected in propname.
+The structur is mapped binary, so it must be described exactly how it exists in the PLC.
+```javascript
+var myHandle = {
+    symname: '.SOMESTRUCTURE',  
+    bytelength: [ ads.BOOL, 
+                  ads.array(ads.INT,0,9),
+                  ads.array(ads.string(10),0,9),
+                  ads.array(ads.useLocalTimezone(ads.TIME,false),0,9)
+                 ],  
+    propname: ['value.abool',
+               'value.aarrayofint',
+               'value.aarrayofstring',
+               'value.aarrayoftime']
+}
 ```
 
 
