@@ -222,10 +222,22 @@ var client = ads.connect(options, function() {
 ### Get symbol list
 
 ```javascript
-client = ads.connect(options, function() {
-    this.getSymbols(function(err, symbols) {
+var client = ads.connect(options, function() {
+    this.getSymbols(function(err, symbols, false) {
         if (err) console.log(err)
-        console.log(symbols)
+        console.log(JSON.stringify(symbols, null, 2))
+        this.end()
+    })
+})
+```
+
+### Get datatyp list
+
+```javascript
+var client = ads.connect(options, function() {
+    this.getDatatyps(function(err, datatyps) {
+        if (err) console.log(err)
+        else console.log(JSON.stringify(datatyps, null, 2))
         this.end()
     })
 })
@@ -425,10 +437,10 @@ var myHandle = {
                   ads.array(ads.string(10),0,9),
                   ads.array(ads.useLocalTimezone(ads.TIME,false),0,9)
                  ],  
-    propname: ['value_abool',
-               'value_aarrayofint',
-               'value_aarrayofstring',
-               'value_aarrayoftime']
+    propname: ['value_a.bool',
+               'value_a.arrayofint',
+               'value_a.arrayofstring',
+               'value_a.arrayoftime']
 }
 ```
 
