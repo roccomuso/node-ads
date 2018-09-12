@@ -1,5 +1,5 @@
 {
-  "name": "node-ads-api",
+  "name": "node-ads",
   "version": "1.4.3",
   "description": "NodeJS Twincat ADS protocol implementation",
   "main": "lib/ads.js",
@@ -9,13 +9,12 @@
     "sps",
     "ads",
     "beckhoff",
-    "protocol",
-    "api"
+    "protocol"
   ],
   "engines": {
     "node": ">=0.10"
   },
-  "author": "Chris Traeger",
+  "author": "Rocco Musolino (@roccomuso)",
   "licenses": [
     {
       "type": "MIT"
@@ -23,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ChrisHanuta/node-ads-api.git"
+    "url": "https://github.com/roccomuso/node-ads"
   },
   "dependencies": {
     "debug": "^3.1.0",
