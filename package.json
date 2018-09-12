@@ -1,11 +1,12 @@
 {
   "name": "node-ads",
-  "version": "1.2.0",
+  "version": "1.4.3",
   "description": "NodeJS Twincat ADS protocol implementation",
-  "main": "index.js",
+  "main": "lib/ads.js",
   "keywords": [
     "twincat",
     "plc",
+    "sps",
     "ads",
     "beckhoff",
     "protocol"
@@ -25,7 +26,6 @@
   },
   "dependencies": {
     "debug": "^3.1.0",
-    "lodash": "^4.17.4",
     "safe-buffer": "^5.1.1"
   }
 }
