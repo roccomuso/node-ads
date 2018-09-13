@@ -17,6 +17,27 @@ node-ads [![NPM Version](https://img.shields.io/npm/v/node-ads.svg)](https://www
 - working string length
 - array added
 
+### Requirements
+* Beckhoff PLC that has an ethernet connection and is connected to your LAN
+    * Make your you give the PLC a fixed IP address
+    * Make sure you can ping the PLC from another computer
+
+### Configuration
+
+1. Enable ADS on your PLC project. To do this click on your task and then enable the checkbox before `Create symbols` (if he is not disabled).
+In addition, you can still, under I/O Devices click on Image and go to the ADS tab. Check the `Enable ADS Server` and also `Create symbols`.
+Download the new configuration and make sure you reboot your PLC. The reboot is only needed when you are using TwinCat 2.
+
+2. Now add a static route to our Beckhoff PLC. The route should point to your server that will run the proxy application.
+It's also a good idea to add an extra static route that points to your local development device. This way you can test out the proxy from your development device too.
+
+### Attention
+
+1. TwinCAT AMS Router doesn't allow multiple TCP connections from the same host. So when you use two AdsLib instances on the same host to connect to the same TwinCAT router, you will see that TwinCAT will close the first TCP connection and only respond to the newest. If you start the TwinCat System Manager and Node-Red ADS on the same PC at the same time, Node-Red will not run anymore. You can set up a second IPv4 on the PC and assign to this a ADS NET ID under Twincat
+
+2. As ADS is transmitted over a TCP connection, there is no real time guarantee.
+
+
 Examples
 --------
 
@@ -41,8 +62,10 @@ var options = {
     //port: 48898
     //The ams source port
     //amsPortSource: 32905
-    //The ams target port
-    //amsPortTarget: 801
+    //The ams target port for TwinCat 2 Runtime 1 
+    //amsPortTarget: 801 
+    //The ams target port for TwinCat 3 Runtime 1
+    //amsPortTarget: 851 
 }
 
 var client = ads.connect(options, function() {
@@ -322,6 +345,16 @@ client.on('error', function(error) {
     console.log(error)
 })
 ```
+
+
+### Something about the handle
+
+If the handle remains persistent (eg as a global object), when the end() function is called the symhandle must be deleted from the handle. Otherwise, the old non-existing syshandle is used in a new connection and triggers an error.
+
+#### symname
+
+Global variables must start with a dot: ```.engine```
+Program variables must start with the programname: ```MAIN.UpTyp.timerUp.PT```
 
 ### Something about the bytelength
 All possibilities of bytelength described here work with read, write, notificaton, multiread and multiwrite.
