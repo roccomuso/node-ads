@@ -1,6 +1,6 @@
 {
   "name": "node-ads-api",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "NodeJS Twincat ADS protocol implementation",
   "main": "lib/ads.js",
   "keywords": [
