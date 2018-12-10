@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ChrisHanuta/node-ads-api.git"
+    "url": "https://github.com/PLCHome/node-ads-api.git"
   },
   "dependencies": {
     "debug": "^3.1.0",
