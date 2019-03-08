@@ -1,4 +1,4 @@
-// Copyright (c) 2014 Inando (edit by roccomuso and PLCHome)
+// Copyright (c) 2014 Inando (edit by roccomuso and ChrisHanuta)
 
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -74,23 +74,12 @@ var getAdsObject = function (options) {
   ads.adsClient.notify = function (handle, cb) {
     return notify.call(ads, handle, cb)
   }
-
-  ads.adsClient.releaseNotificationHandles = function (cb) {
-    return releaseNotificationHandles.call(ads, cb)
-  }
-
-  ads.adsClient.releaseNotificationHandle = function (handle, cb) {
-    return releaseNotificationHandle.call(ads, handle, cb)
-  }
-
   ads.adsClient.writeRead = function (handle, cb) {
     return writeReadCommand.call(ads, handle, cb)
   }
-
   ads.adsClient.getSymbols = function (cb, raw) {
     return getSymbols.call(ads, cb, raw)
   }
-
   ads.adsClient.getDatatyps = function (cb) {
     return getDatatyps.call(ads, cb)
   }
@@ -214,10 +203,10 @@ var analyseResponse = function () {
   emitAdsError.call(ads, errorId)
 
   var totHeadSize = ads.tcpHeaderSize + ads.amsHeaderSize
-  var data = Buffer.alloc(length);
+  var data = new Buffer(length)
   ads.dataStream.copy(data, 0, totHeadSize, totHeadSize + length)
   if (ads.dataStream.length > totHeadSize + length) {
-    var nextdata = Buffer.alloc(ads.dataStream.length - totHeadSize - length)
+    var nextdata = new Buffer(ads.dataStream.length - totHeadSize - length)
     ads.dataStream.copy(nextdata, 0, totHeadSize + length)
     ads.dataStream = nextdata
   } else ads.dataStream = null
@@ -270,7 +259,7 @@ var analyseResponse = function () {
 /// //////////////////// ADS FUNCTIONS ///////////////////////
 
 var readDeviceInfo = function (cb) {
-  var buf = Buffer.alloc(0);
+  var buf = new Buffer(0)
 
   var options = {
     commandId: ID_READ_DEVICE_INFO,
@@ -281,7 +270,7 @@ var readDeviceInfo = function (cb) {
 }
 
 var readState = function (cb) {
-  var buf = Buffer.alloc(0);
+  var buf = new Buffer(0)
 
   var options = {
     commandId: ID_READ_STATE,
@@ -548,7 +537,6 @@ var notify = function (handle, cb) {
             debug('Add notiHandle ' + notiHandle)
           }
 
-          handle.notifyHandle = notiHandle
           this.notifications[notiHandle] = handle
         }
         if (typeof cb !== 'undefined') {
@@ -579,13 +567,13 @@ var getSymbols = function (cb, raw) {
 
       readCommand.call(ads, cmdSymbols, function (err, result) {
         var symbols = []
+        var pos = 0
         var initialPos = 0
         if (!err) {
-          while (initialPos < result.length) {
+          while (pos < result.length) {
             var symbol = {}
-            var pos = initialPos
+            initialPos = pos;
             var readLength = result.readUInt32LE(pos)
-            initialPos = initialPos + readLength
             symbol.indexGroup = result.readUInt32LE(pos + 4)
             symbol.indexOffset = result.readUInt32LE(pos + 8)
             symbol.size = result.readUInt32LE(pos + 12)
@@ -597,17 +585,17 @@ var getSymbols = function (cb, raw) {
 
             pos = pos + 30
 
-            var nameBuf = Buffer.alloc(nameLength);
+            var nameBuf = new Buffer(nameLength)
             result.copy(nameBuf, 0, pos, pos + nameLength)
             symbol.name = nameBuf.toString('binary', 0, findStringEnd(nameBuf, 0))
             pos = pos + nameLength
 
-            var typeBuf = Buffer.alloc(typeLength);
+            var typeBuf = new Buffer(typeLength)
             result.copy(typeBuf, 0, pos, pos + typeLength)
             symbol.type = typeBuf.toString('binary', 0, findStringEnd(typeBuf, 0))
             pos = pos + typeLength
 
-            var commentBuf = Buffer.alloc(commentLength);
+            var commentBuf = new Buffer(commentLength)
             result.copy(commentBuf, 0, pos, pos + commentLength)
             symbol.comment = commentBuf.toString('binary', 0, findStringEnd(commentBuf, 0))
             pos = pos + commentLength
@@ -635,6 +623,8 @@ var getSymbols = function (cb, raw) {
             } else {
               symbols.push(symbol)
             }
+
+            pos = initialPos + readLength;
           }
         }
 
@@ -698,17 +688,17 @@ var getDatatyps = function (cb) {
 
             pos = pos + 42
 
-            var nameBuf = Buffer.alloc(nameLength);
+            var nameBuf = new Buffer(nameLength)
             result.copy(nameBuf, 0, pos, pos + nameLength)
             datatyp.name = nameBuf.toString('binary', 0, findStringEnd(nameBuf, 0))
             pos = pos + nameLength
 
-            var typeBuf = Buffer.alloc(typeLength);
+            var typeBuf = new Buffer(typeLength)
             result.copy(typeBuf, 0, pos, pos + typeLength)
             datatyp.type = typeBuf.toString('binary', 0, findStringEnd(typeBuf, 0))
             pos = pos + typeLength
 
-            var commentBuf = Buffer.alloc(commentLength);
+            var commentBuf = new Buffer(commentLength)
             result.copy(commentBuf, 0, pos, pos + commentLength)
             datatyp.comment = commentBuf.toString('binary', 0, findStringEnd(commentBuf, 0))
             pos = pos + commentLength
@@ -804,35 +794,18 @@ var releaseSymHandle = function (symhandle, cb) {
 
 var releaseNotificationHandles = function (cb) {
   var ads = this
-  if (ads.notificationsToRelease.length > 0) {
-    var notificationHandle = ads.notificationsToRelease.shift()
-    deleteDeviceNotificationCommand.call(ads, notificationHandle, function () {
+  if (this.notificationsToRelease.length > 0) {
+    var notificationHandle = this.notificationsToRelease.shift()
+    deleteDeviceNotificationCommand.call(this, notificationHandle, function () {
       releaseNotificationHandles.call(ads, cb)
     })
-  } else cb.call(ads)
-}
-
-var releaseNotificationHandle = function (handle,cb) {
-  var ads = this
-  if (handle.notifyHandle === 'undefined'){
-    throw new Error("The handle doesn't have a notifyHandle!")
-  }
-  var index = ads.notificationsToRelease.indexOf(handle.notifyHandle)
-  if (index>-1) {
-    delete ads.notifications[handle.notifyHandle]
-    ads.notificationsToRelease.splice(index,1)
-    deleteDeviceNotificationCommand.call(ads, handle.notifyHandle, function () {
-      delete handle.notifyHandle
-      if (cb)
-        cb.call(ads)
-    })
-  }
+  } else cb.call(this)
 }
 
 /// ///////////////////// COMMANDS ///////////////////////
 
 var readCommand = function (commandOptions, cb) {
-  var buf = Buffer.alloc(12);
+  var buf = new Buffer(12)
   buf.writeUInt32LE(commandOptions.indexGroup, 0)
   buf.writeUInt32LE(commandOptions.indexOffset, 4)
   buf.writeUInt32LE(commandOptions.bytelength, 8)
@@ -847,7 +820,7 @@ var readCommand = function (commandOptions, cb) {
 }
 
 var writeCommand = function (commandOptions, cb) {
-  var buf = Buffer.alloc(12 + commandOptions.bytelength);
+  var buf = new Buffer(12 + commandOptions.bytelength)
   buf.writeUInt32LE(commandOptions.indexGroup, 0)
   buf.writeUInt32LE(commandOptions.indexOffset, 4)
   buf.writeUInt32LE(commandOptions.bytelength, 8)
@@ -863,7 +836,7 @@ var writeCommand = function (commandOptions, cb) {
 }
 
 var addNotificationCommand = function (commandOptions, cb) {
-  var buf = Buffer.alloc(40);
+  var buf = new Buffer(40)
   buf.writeUInt32LE(commandOptions.indexGroup, 0)
   buf.writeUInt32LE(commandOptions.indexOffset, 4)
   buf.writeUInt32LE(commandOptions.bytelength, 8)
@@ -885,7 +858,7 @@ var addNotificationCommand = function (commandOptions, cb) {
 }
 
 var writeReadCommand = function (commandOptions, cb) {
-  var buf = Buffer.alloc(16 + commandOptions.writeBuffer.length);
+  var buf = new Buffer(16 + commandOptions.writeBuffer.length)
   buf.writeUInt32LE(commandOptions.indexGroup, 0)
   buf.writeUInt32LE(commandOptions.indexOffset, 4)
   buf.writeUInt32LE(commandOptions.readLength, 8)
@@ -902,7 +875,7 @@ var writeReadCommand = function (commandOptions, cb) {
 }
 
 var deleteDeviceNotificationCommand = function (notificationHandle, cb) {
-  var buf = Buffer.alloc(4);
+  var buf = new Buffer(4)
   buf.writeUInt32LE(notificationHandle, 0)
 
   var options = {
@@ -922,7 +895,7 @@ var runCommand = function (options) {
     throw new Error('A command needs a callback function!')
   }
 
-  var header = Buffer.alloc(headerSize + tcpHeaderSize);
+  var header = new Buffer(headerSize + tcpHeaderSize)
 
   // 2 bytes resserver (=0)
   header.writeUInt16LE(0, offset)
@@ -978,7 +951,7 @@ var runCommand = function (options) {
   header.writeUInt32LE(++this.invokeId, offset)
   offset += 4
 
-  var buf = Buffer.alloc(tcpHeaderSize + headerSize + options.data.length);
+  var buf = new Buffer(tcpHeaderSize + headerSize + options.data.length)
   header.copy(buf, 0, 0)
   options.data.copy(buf, tcpHeaderSize + headerSize, 0)
 
@@ -1025,7 +998,7 @@ var getReadResult = function (data, cb) {
   var err = getError(adsError)
   if (!err) {
     var bytelength = data.readUInt32LE(4)
-    result = Buffer.alloc(bytelength);
+    result = new Buffer(bytelength)
     data.copy(result, 0, 8, 8 + bytelength)
   }
   cb.call(this, err, result)
@@ -1038,7 +1011,7 @@ var getWriteReadResult = function (data, cb) {
   var err = getError(adsError)
   if (!err) {
     var bytelength = data.readUInt32LE(4)
-    result = Buffer.alloc(bytelength);
+    result = new Buffer(bytelength)
     data.copy(result, 0, 8, 8 + bytelength)
   }
   cb.call(this, err, result)
@@ -1104,7 +1077,7 @@ var getNotificationResult = function (data) {
       offset += 4
       size = data.readUInt32LE(offset)
       offset += 4
-      var buf =  Buffer.alloc(size);
+      var buf = new Buffer(size)
       data.copy(buf, 0, offset)
       offset += size
 
@@ -1132,7 +1105,7 @@ var getNotificationResult = function (data) {
 /// ///////////////// HELPERS /////////////////////////////////////////
 
 var stringToBuffer = function (someString) {
-  var buf = Buffer.alloc(someString.length + 1);
+  var buf = new Buffer(someString.length + 1)
   buf.write(someString)
   buf[someString.length] = 0
   return buf
@@ -1273,12 +1246,10 @@ var integrateResultInHandle = function (handle, result) {
     for (var idx = convert.lowIndex; idx <= convert.hiIndex; idx++){
 
       var value = null
-      if (result.length >= (offset+convert.length)) {
-        if (convert.isAdsType) {
-          value = getValue(handle.bytelength[i].name, result, offset, checkUseLocalTimezone(handle,i))
-        } else {
-          value = result.slice(offset, offset + (convert.length))
-        }
+      if (convert.isAdsType) {
+        value = getValue(handle.bytelength[i].name, result, offset, checkUseLocalTimezone(handle,i))
+      } else {
+        value = result.slice(offset, offset + (convert.length))
       }
 
       if (convert.isAdsArray) {
@@ -1546,7 +1517,7 @@ var parseHandle = function (handle) {
 
 var getBytesFromHandle = function (handle) {
   var p = ''
-  var buf = Buffer.alloc(handle.totalByteLength);
+  var buf = new Buffer(handle.totalByteLength)
   var offset = 0
   var convert = {}
   for (var i = 0; i < handle.propname.length; i++) {
@@ -1597,7 +1568,7 @@ var getBytesFromHandle = function (handle) {
             buf.writeDoubleLE(val, offset)
             break
           case 'STRING':
-            var stringbuf = Buffer.alloc(val.toString().slice(0,convert.length-1) + '\0', 'binary');
+            var stringbuf = new Buffer(val.toString().slice(0,convert.length-1) + '\0', 'binary')
             stringbuf.copy(buf, offset)
             break
           case 'TIME':
