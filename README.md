@@ -66,6 +66,8 @@ var options = {
     //amsPortTarget: 801 
     //The ams target port for TwinCat 3 Runtime 1
     //amsPortTarget: 851 
+    //The timeout for PLC requests
+    //timeout: 500
 }
 
 var client = ads.connect(options, function() {
