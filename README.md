@@ -68,6 +68,12 @@ var options = {
     //amsPortTarget: 851 
     //The timeout for PLC requests
     //timeout: 500
+    //The Local address the socket should connect from
+    //localAddress: "192.168.137.50"
+    //The Local port the socket should connect from
+    //localPort: 50000
+    //Version of IP stack. Must be 4, 6, or 0. The value 0 indicates that both IPv4 and IPv6 addresses are allowed. Default: 0
+    //family: 4
 }
 
 var client = ads.connect(options, function() {
