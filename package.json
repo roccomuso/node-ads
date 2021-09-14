@@ -3,6 +3,7 @@
   "version": "1.5.1",
   "description": "NodeJS Twincat ADS protocol implementation",
   "main": "lib/ads.js",
+  "types": "lib/ads.d.ts",
   "keywords": [
     "twincat",
     "plc",
